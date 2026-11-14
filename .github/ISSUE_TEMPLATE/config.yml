@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/playerhub-pipeline/demo-repository/discussions
+    about: Ask questions, share ideas, and engage in architectural RFCs.
+  - name: Security Vulnerability Reporting
+    url: https://github.com/playerhub-pipeline/.github/blob/main/SECURITY.md
+    about: Privately report potential security vulnerabilities.
