@@ -1,0 +1,35 @@
+name: Feature Request
+description: Propose a new feature, pipeline enhancement, or architecture improvement.
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea to improve the data platform or add support for a new marketplace/model? Propose it here!
+  - type: input
+    id: component
+    attributes:
+      label: Target Component / Service
+      description: e.g. playerhub-pipeline, playerhub-intelligence, game-map, order-tracker, pipeline-infra
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Is your feature request related to a problem or bottleneck? Please describe.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution / Implementation
+      description: Describe what you would like to happen and how it fits into the microservices architecture.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative solutions or workarounds you considered.

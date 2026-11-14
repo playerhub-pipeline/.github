@@ -1,0 +1,45 @@
+name: Lint & Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Markdown & YAML Syntax Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Validation Tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
+      - name: Validate YAML files
+        run: |
+          python -c "
+          import glob, yaml, sys
+          errs = 0
+          for f in glob.glob('.github/**/*.yml', recursive=True):
+              try:
+                  with open(f, 'r', encoding='utf-8') as stream:
+                      yaml.safe_load(stream)
+                  print(f'✓ {f} is valid YAML')
+              except Exception as e:
+                  print(f'✗ {f} syntax error: {e}')
+                  errs += 1
+          if errs > 0:
+              sys.exit(1)
+          "
