@@ -1,6 +1,6 @@
 # PlayerHub Pipeline & Data Platform
 
-Welcome to the **PlayerHub Pipeline** organization. This ecosystem powers an enterprise, high-throughput gaming goods arbitrage and data processing platform: aggregating real-time marketplace offers, performing AI-driven catalog normalization and competitive matching, orchestrating multi-platform listing syndication, and managing automated order fulfillment.
+Welcome to the **PlayerHub Pipeline** organization. This ecosystem powers an enterprise, high-throughput gaming goods arbitrage and data processing platform: aggregating real-time marketplace offers, performing AI-driven catalog normalization, computing market intelligence and dynamic pricing models, orchestrating multi-platform listing syndication, and managing automated order fulfillment.
 
 ---
 
@@ -19,7 +19,13 @@ flowchart TD
         DE["Data Entry Portal"]
     end
 
-    subgraph CorePipeline["2. Event-Driven Microservices Engine (playerhub-pipeline)"]
+    subgraph AnalyticsEngine["2. Market Intelligence & Pricing Strategy (playerhub-analysis)"]
+        MarketRules["Pricing Rules (R1–R6)\n& Elasticity Curves"]
+        CutLists["Sell-Through Cut Lists\n& Delisting Tiers"]
+        KeywordMap["Keyword Value Price List\n(218 Games × Tiers)"]
+    end
+
+    subgraph CorePipeline["3. Event-Driven Microservices Engine (playerhub-pipeline)"]
         Intake["intake\n(Scrape, Dedup & Park)"]
         Reformat["reformat (AI#1)\n(Multilingual Normalization)"]
         Matching["matching (AI#2)\n(Competitive Site Matching)"]
@@ -35,7 +41,7 @@ flowchart TD
         Coord["coordinator\n(Agent Sync & Distributed Leases)"]
     end
 
-    subgraph AIPlatform["3. Dedicated AI & MLOps Platform (playerhub-intelligence)"]
+    subgraph AIPlatform["4. Dedicated AI & MLOps Platform (playerhub-intelligence)"]
         AIGateway["AI Gateway\n(Provider Router & Failover)"]
         GeminiPrimary["Primary LLM\n(Gemini 2.5 Flash)"]
         VertexFallback["Fallback LLM\n(Google Vertex AI)"]
@@ -44,7 +50,7 @@ flowchart TD
         EvalHarness["Golden Eval Suite\n(Pareto & Parity Comparator)"]
     end
 
-    subgraph DataTier["4. Persistence & Security Tier (pipeline-infra)"]
+    subgraph DataTier["5. Persistence & Security Tier (pipeline-infra)"]
         MySQLPrimary[("MySQL 8.0 Primary\n(ACID Ledger & Outbox)")]
         MySQLReplicas[("MySQL Read Replicas\n(High-Throughput Queries)")]
         RedisStore[("Redis\n(Sessions & Distributed Locks)")]
@@ -52,7 +58,7 @@ flowchart TD
         Vault[("HashiCorp Vault 1.17\n(Auto-Unseal & Secrets)")]
     end
 
-    subgraph DeliveryDestinations["5. Syndication & Fulfillment"]
+    subgraph DeliveryDestinations["6. Syndication & Fulfillment"]
         GB["GameBoost"]
         IGI["IGItems"]
         EB24["Eloboost24"]
@@ -67,6 +73,12 @@ flowchart TD
     Reformat -->|"OfferReformatted"| Matching
     Reformat -->|"OfferReformatted"| Images
     Images -->|"Upload Media"| R2Storage
+
+    %% Analytics & Pricing Integration into Core Services
+    MarketRules & KeywordMap -->|"Dynamic Pricing & Margin Models"| Matching
+    CutLists -->|"Tier Delisting & Protection Rules"| Remediation
+
+    %% Core Pipeline Workflow
     Matching -->|"OfferMatched"| Publishing
     Matching -->|"OfferMatched"| MainDelivery
     Scheduler -->|"CheckRequested"| Liveness
@@ -129,6 +141,7 @@ These repositories form the active, production-grade microservices platform:
 | **[`playerhub-intelligence`](https://github.com/playerhub-pipeline/playerhub-intelligence)** | Python 3.12, FastAPI, Pydantic v2, Google GenAI, Vertex AI, Langfuse, MLflow | **Dedicated AI & MLOps Platform (Stage L).** Multi-provider LLM gateway with Gemini 2.5 Flash primary and Vertex AI fallback, automated shadow parity evaluation, Pareto hyperparameter tuning, and golden dataset benchmarks. |
 | **[`pipeline-infra`](https://github.com/playerhub-pipeline/pipeline-infra)** | Docker Compose, HashiCorp Vault 1.17, Prometheus, Grafana, Alertmanager, Rclone | **Infrastructure as Code & Observability.** Production container compose definitions, Vault secret engine with auto-unseal, Prometheus/Alertmanager monitoring, automated offsite encrypted backups (Google Drive), and 15-minute point-in-time recovery. |
 | **[`playerhub-order-tracker-main`](https://github.com/playerhub-pipeline/playerhub-order-tracker-main)** | Python 3.14, Django 6.1, React 19, Vite, PostgreSQL, Redis | **Order Fulfillment & Delivery Microservice.** Real-time internal order fulfillment board, customer support rooms, buyer-seller messaging, delivery automation, and staff shift analytics. |
+| **[`playerhub-analysis`](https://github.com/playerhub-pipeline/playerhub-analysis)** | Python 3.12, Pandas, NumPy, OpenPyXL, Scipy | **Market Intelligence & Dynamic Pricing Engine.** Analyzes competitor price elasticity, sell-through velocity, and keyword valuation to generate automated pricing rules (R1–R6) for `matching` (AI#2) and cut lists for `remediation`. |
 | **[`game-map`](https://github.com/playerhub-pipeline/game-map)** | Python 3.12, Pytest, curl_cffi | **Taxonomy & Cross-Market Catalog Mapping.** Canonical game/category/attribute resolution across all scraping sources and destination partner marketplaces. |
 | **[`.github`](https://github.com/playerhub-pipeline/.github)** | Markdown, GitHub Actions | **Organization Standards & Meta Repository.** Global architecture blueprints, community health guidelines, default PR/issue templates, CODEOWNERS, and security policies. |
 
@@ -149,12 +162,11 @@ The following legacy, experimental, and auxiliary components have been retired a
 ---
 
 ### 🔬 Auxiliary & Internal Tools (Non-Microservices)
-These repositories serve standalone operational or research purposes and are explicitly separated from the microservices platform:
+This repository serves an isolated operational purpose and is decoupled from the microservices platform:
 
 | Repository | Focus | Classification |
 | :--- | :--- | :--- |
 | **[`cattr-insights`](https://github.com/playerhub-pipeline/cattr-insights)** | Custom analytics and reporting add-on for the team's self-hosted Cattr time-tracker (`/opt/cattr`). | **Internal HR / Staff Productivity Tool.** Reads Cattr's database read-only (`insights_ro`). Completely decoupled from the PlayerHub microservices pipeline. |
-| **[`playerhub-analysis`](https://github.com/playerhub-pipeline/playerhub-analysis)** | Offline quantitative data science, pricing dynamics, margin sensitivity models, and marketplace order studies. | **Offline Data Science & Research.** Does not participate in live runtime transactions or event buses. |
 
 ---
 
