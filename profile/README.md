@@ -4,9 +4,9 @@ Welcome to the **PlayerHub Pipeline** organization. This ecosystem powers an ent
 
 ---
 
-## 🏗️ System Architecture & Platform Design
+## 🏗️ Microservices Architecture & Platform Design
 
-The platform adheres to **ADR 002 (Clean Layered & Event-Driven Microservices Architecture)**. Application layers strictly isolate business logic from transport protocols and persistent stores. The database contains **zero business logic**.
+The core platform strictly adheres to **ADR 002 (Clean Layered & Event-Driven Microservices Architecture)**. Application layers strictly isolate business logic from transport protocols and persistence engines. The database contains **zero business logic**.
 
 ```mermaid
 flowchart TD
@@ -35,7 +35,7 @@ flowchart TD
         Coord["coordinator\n(Agent Sync & Distributed Leases)"]
     end
 
-    subgraph AIPlatform["3. Dedicated AI & MLOps (playerhub-intelligence)"]
+    subgraph AIPlatform["3. Dedicated AI & MLOps Platform (playerhub-intelligence)"]
         AIGateway["AI Gateway\n(Provider Router & Failover)"]
         GeminiPrimary["Primary LLM\n(Gemini 2.5 Flash)"]
         VertexFallback["Fallback LLM\n(Google Vertex AI)"]
@@ -44,7 +44,7 @@ flowchart TD
         EvalHarness["Golden Eval Suite\n(Pareto & Parity Comparator)"]
     end
 
-    subgraph DataTier["4. Persistence & Security Tier"]
+    subgraph DataTier["4. Persistence & Security Tier (pipeline-infra)"]
         MySQLPrimary[("MySQL 8.0 Primary\n(ACID Ledger & Outbox)")]
         MySQLReplicas[("MySQL Read Replicas\n(High-Throughput Queries)")]
         RedisStore[("Redis\n(Sessions & Distributed Locks)")]
@@ -118,22 +118,43 @@ Every service in `playerhub-pipeline` is isolated behind strict boundaries: serv
 
 ---
 
-## 📦 Complete Repositories Ecosystem
+## 📦 Repositories Directory
 
-| Repository | Tech Stack | Architecture Role & Scope |
+### 🚀 Core Microservices Platform Repositories
+These repositories form the active, production-grade microservices platform:
+
+| Repository | Tech Stack | Role in Microservices Architecture |
 | :--- | :--- | :--- |
-| **[`playerhub-pipeline`](https://github.com/playerhub-pipeline/playerhub-pipeline)** | Python 3.12, SQLAlchemy 2.0, Alembic, MySQL 8.0, Pytest, Ruff | **Core Pipeline & Microservices Engine.** Contains all 13 event-driven microservices, transaction ledger, database-per-service topology, table-ownership guards, and outbox/inbox messaging transports. |
-| **[`playerhub-intelligence`](https://github.com/playerhub-pipeline/playerhub-intelligence)** | Python 3.12, FastAPI, Pydantic v2, Google GenAI, Vertex AI, Langfuse, MLflow | **Dedicated AI & MLOps Platform (Stage L).** Multi-provider LLM gateway with Gemini 2.5 Flash primary and Vertex AI fallback, automated parity shadow evaluation, Pareto hyperparameter tuning, and golden dataset benchmarks. |
-| **[`pipeline-infra`](https://github.com/playerhub-pipeline/pipeline-infra)** | Docker Compose, HashiCorp Vault 1.17, Prometheus, Grafana, Alertmanager, Rclone | **Infrastructure as Code & Observability.** Host container definitions, Vault secret engine with auto-unseal, Prometheus/Alertmanager monitoring, automated offsite encrypted backups (Google Drive), and 15-minute point-in-time recovery. |
-| **[`playerhub-order-tracker-main`](https://github.com/playerhub-pipeline/playerhub-order-tracker-main)** | Python 3.14, Django 6.1, React 19, Vite, PostgreSQL, Redis | **Order Management & Delivery Board.** Real-time internal order fulfillment board, customer support rooms, buyer-seller messaging, delivery automation, and staff shift analytics. |
-| **[`game-map`](https://github.com/playerhub-pipeline/game-map)** | Python 3.12, Pytest, curl_cffi | **Taxonomy & Cross-Market Catalog Mapping.** Normalizes game titles, categories, server regions, and character attributes across 6+ disparate source and destination marketplaces. |
-| **[`playerhub-concierge`](https://github.com/playerhub-pipeline/playerhub-concierge)** | Python 3.12, LangChain, Chromadb, FastAPI | **AI Concierge & Buyer-Seller Mediation Engine.** 12-layer multimodal buyer-seller mediation engine with hybrid RAG, deterministic abstention guards, and automated browser-assisted order relay. |
-| **[`playerhub-chat-widget`](https://github.com/playerhub-pipeline/playerhub-chat-widget)** | TypeScript, Web Components, Vite, Tailwind CSS | **Lightweight Storefront Chat UI.** Standalone, zero-business-logic embeddable web chat widget supporting real-time streaming, multilingual RTL/LTR layout, and customer handoff. |
-| **[`playerhub-seller-dashboard`](https://github.com/playerhub-pipeline/playerhub-seller-dashboard)** | React 19, TypeScript, Tailwind CSS | **Seller Operations Portal.** Web-based management console for sellers to monitor lot pricing, upload health, inventory status, and marketplace margin performance. |
-| **[`playerhub-analysis`](https://github.com/playerhub-pipeline/playerhub-analysis)** | Python, Pandas, Jupyter, Matplotlib | **Market Research & Financial Modeling.** Offline quantitative analysis of marketplace volume, pricing dynamics, margin sensitivities, and order trends. |
-| **[`cattr-insights`](https://github.com/playerhub-pipeline/cattr-insights)** | PHP 8.3, Cattr v4.1, Laravel | **Staff Time-Tracking & Performance Analytics.** Custom insights and reporting extension for Cattr, generating shift productivity reports and delivery benchmarks. |
-| **[`intern-tasks`](https://github.com/playerhub-pipeline/intern-tasks)** | Python, Multi-language | **Engineering Onboarding & Sandbox.** Structured engineering tasks, test suites, and challenge assignments for new contributors. |
-| **[`.github`](https://github.com/playerhub-pipeline/.github)** | Markdown, GitHub Actions | **Organization Standards & Meta Repository.** Organization-wide profile README, shared architecture blueprints, default PR/issue templates, CODEOWNERS, and security policies. |
+| **[`playerhub-pipeline`](https://github.com/playerhub-pipeline/playerhub-pipeline)** | Python 3.12, SQLAlchemy 2.0, Alembic, MySQL 8.0, Pytest, Ruff | **Core Pipeline & Microservices Engine.** Hosts all 13 event-driven microservices, transaction ledger, database-per-service topology, table-ownership runtime guards, and transactional outbox/inbox messaging transports. |
+| **[`playerhub-intelligence`](https://github.com/playerhub-pipeline/playerhub-intelligence)** | Python 3.12, FastAPI, Pydantic v2, Google GenAI, Vertex AI, Langfuse, MLflow | **Dedicated AI & MLOps Platform (Stage L).** Multi-provider LLM gateway with Gemini 2.5 Flash primary and Vertex AI fallback, automated shadow parity evaluation, Pareto hyperparameter tuning, and golden dataset benchmarks. |
+| **[`pipeline-infra`](https://github.com/playerhub-pipeline/pipeline-infra)** | Docker Compose, HashiCorp Vault 1.17, Prometheus, Grafana, Alertmanager, Rclone | **Infrastructure as Code & Observability.** Production container compose definitions, Vault secret engine with auto-unseal, Prometheus/Alertmanager monitoring, automated offsite encrypted backups (Google Drive), and 15-minute point-in-time recovery. |
+| **[`playerhub-order-tracker-main`](https://github.com/playerhub-pipeline/playerhub-order-tracker-main)** | Python 3.14, Django 6.1, React 19, Vite, PostgreSQL, Redis | **Order Fulfillment & Delivery Microservice.** Real-time internal order fulfillment board, customer support rooms, buyer-seller messaging, delivery automation, and staff shift analytics. |
+| **[`game-map`](https://github.com/playerhub-pipeline/game-map)** | Python 3.12, Pytest, curl_cffi | **Taxonomy & Cross-Market Catalog Mapping.** Canonical game/category/attribute resolution across all scraping sources and destination partner marketplaces. |
+| **[`.github`](https://github.com/playerhub-pipeline/.github)** | Markdown, GitHub Actions | **Organization Standards & Meta Repository.** Global architecture blueprints, community health guidelines, default PR/issue templates, CODEOWNERS, and security policies. |
+
+---
+
+### 🗄️ Archived & Retired Repositories
+The following legacy, experimental, and auxiliary components have been retired and archived:
+
+| Repository | Status | Reason & Replacement |
+| :--- | :---: | :--- |
+| **[`intern-tasks`](https://github.com/playerhub-pipeline/intern-tasks)** | `Archived` | Legacy intern challenge submissions and exercises; not part of the production microservices pipeline. |
+| **[`playerhub-concierge`](https://github.com/playerhub-pipeline/playerhub-concierge)** | `Archived` | Retired 12-layer mediation engine; replaced by the unified order tracking and support architecture. |
+| **[`playerhub-chat-widget`](https://github.com/playerhub-pipeline/playerhub-chat-widget)** | `Archived` | Standalone UI chat widget for the concierge engine; archived alongside the concierge retirement. |
+| **[`playerhub-seller-dashboard`](https://github.com/playerhub-pipeline/playerhub-seller-dashboard)** | `Archived` | Legacy standalone seller UI; consolidated into `playerhub-pipeline`'s unified web service (`services/web`). |
+| **[`playerhub-order-tracker-old-fork`](https://github.com/playerhub-pipeline/playerhub-order-tracker-old-fork)** | `Archived` | Early experimental fork; fully superseded by `playerhub-order-tracker-main`. |
+| **[`demo-repository`](https://github.com/playerhub-pipeline/demo-repository)** | `Archived` | Boilerplate demonstration repository; archived to keep the organization catalog clean. |
+
+---
+
+### 🔬 Auxiliary & Internal Tools (Non-Microservices)
+These repositories serve standalone operational or research purposes and are explicitly separated from the microservices platform:
+
+| Repository | Focus | Classification |
+| :--- | :--- | :--- |
+| **[`cattr-insights`](https://github.com/playerhub-pipeline/cattr-insights)** | Custom analytics and reporting add-on for the team's self-hosted Cattr time-tracker (`/opt/cattr`). | **Internal HR / Staff Productivity Tool.** Reads Cattr's database read-only (`insights_ro`). Completely decoupled from the PlayerHub microservices pipeline. |
+| **[`playerhub-analysis`](https://github.com/playerhub-pipeline/playerhub-analysis)** | Offline quantitative data science, pricing dynamics, margin sensitivity models, and marketplace order studies. | **Offline Data Science & Research.** Does not participate in live runtime transactions or event buses. |
 
 ---
 
