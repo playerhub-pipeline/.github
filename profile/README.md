@@ -130,6 +130,48 @@ Every service in `playerhub-pipeline` is isolated behind strict boundaries: serv
 
 ---
 
+## 📚 Unified Documentation Master Index (In-Repo Single Source of Truth)
+
+We follow the **In-Repo Documentation Architecture**: all technical specifications, ADRs, database schemas, runbooks, and pricing formulas live directly alongside the code in their respective repositories. This guarantees **zero documentation drift**—documentation is reviewed, tested, and merged atomically with every code change in the exact same Pull Request.
+
+Use this index to navigate the entire platform documentation suite:
+
+### 🏛️ 1. Architecture Decisions & Scaling Plans
+- **[ADR 002: Event-Driven Microservices Architecture](https://github.com/playerhub-pipeline/playerhub-pipeline/blob/main/docs/architecture/decisions/002-event-driven-microservices.md)** — Core decision extracting the monolith into 13 event-driven services with outbox/inbox messaging and database-per-service isolation.
+- **[ADR 003: Dedicated AI Service & MLOps Platform](https://github.com/playerhub-pipeline/playerhub-pipeline/blob/main/docs/architecture/decisions/003-ai-service-and-mlops.md)** — Decision establishing `playerhub-intelligence` with Langfuse tracing, MLflow champion registry, and golden evaluations.
+- **[PlayerHub Architecture & Scaling Plan](https://github.com/playerhub-pipeline/playerhub-pipeline/blob/main/docs/plans/ARCHITECTURE_AND_SCALING_PLAN.md)** — Blueprint for clean layered boundaries, stateless web tier, Redis caching, read-replica splits, and CDN edge defense.
+- **[System Baseline & Scorecard (2026-11)](https://github.com/playerhub-pipeline/playerhub-pipeline/blob/main/docs/architecture/SYSTEM_BASELINE_2026-11.md)** — Measured platform fact sheet, host resources, queue health, container footprints, and candidate rankings.
+- **[Microservices Service Map & Event Contracts](https://github.com/playerhub-pipeline/playerhub-pipeline/blob/main/docs/architecture/services.md)** — Complete map of service responsibilities, table write ownership, and consumed/emitted events.
+
+### 🗄️ 2. Database Architecture & Schema Reference
+- **[Database Topology & Isolation Architecture](https://github.com/playerhub-pipeline/playerhub-pipeline/blob/main/docs/DATABASE.md)** — Relational design, single-writer invariants, `ph_pipe` access model, and database-per-service isolation plan.
+- **[Comprehensive Database Schema Reference](https://github.com/playerhub-pipeline/playerhub-pipeline/blob/main/docs/DATABASE_SCHEMA.md)** — Exhaustive documentation of all 44+ tables, primary keys, indices, and retention policies.
+
+### 🤖 3. Dedicated AI & MLOps Platform (`playerhub-intelligence`)
+- **[AI Intelligence Platform README](https://github.com/playerhub-pipeline/playerhub-intelligence/blob/main/README.md)** — Service setup, FastAPI inference gateway, provider fallback logic (Gemini 2.5 Flash &rarr; Vertex AI), and test harness.
+- **[Branch Protection & Quality Gates](https://github.com/playerhub-pipeline/playerhub-intelligence/blob/main/BRANCH_PROTECTION.md)** — PR policy, required CI gates, typecheck thresholds, and model evaluation standards.
+
+### 🛡️ 4. Infrastructure, Secrets & Disaster Recovery (`pipeline-infra`)
+- **[Database Backup & Disaster Recovery Runbook](https://github.com/playerhub-pipeline/pipeline-infra/blob/main/backup/README.md)** — 15-minute point-in-time binary log archival, AES-256 encrypted Google Drive sync via Rclone, and automated restore drill procedures.
+- **[HashiCorp Vault Security & Auto-Unseal](https://github.com/playerhub-pipeline/pipeline-infra/blob/main/vault/README.md)** — Vault server setup, policies, auto-unseal systemd timers, and dynamic credential delivery.
+- **[CI/CD Runner Architecture & Capacity Gates](https://github.com/playerhub-pipeline/pipeline-infra/blob/main/ci/README.md)** — Self-hosted isolated runners, memory/CPU slice throttling, and automated gate validation.
+
+### 📊 5. Market Intelligence & Pricing Strategy (`playerhub-analysis`)
+- **[Offers & Market Analysis Guide](https://github.com/playerhub-pipeline/playerhub-analysis/blob/main/market/README.md)** — Comprehensive findings on offer sell-through velocity, competitor price gaps, and dead-weight lot removal.
+- **[Dynamic Pricing Rules (R1–R6) & Delisting Cut Lists](https://github.com/playerhub-pipeline/playerhub-analysis/blob/main/TODO.md)** — Actionable pricing multipliers by price band, competitor undercut protection, and tier-based delisting rules feeding `matching` and `remediation`.
+- **[Data Analysis Execution Runbook](https://github.com/playerhub-pipeline/playerhub-analysis/blob/main/docs/HOW_TO_RUN.md)** — Instructions for re-running quantitative market analysis pipelines and regenerating keyword price books.
+
+### 📦 6. Order Fulfillment & Taxonomy Mapping
+- **[Order Tracker Board & Delivery Service](https://github.com/playerhub-pipeline/playerhub-order-tracker-main/blob/main/README.md)** — Architecture of the Django REST API + React 19 SPA order fulfillment board, Redis session caching, and staff chat rooms.
+- **[Game Map Taxonomy Resolution](https://github.com/playerhub-pipeline/game-map/blob/main/README.md)** — Catalog normalization and canonical cross-marketplace attribute dictionary across all scraping sources and destination marketplaces.
+
+### 📋 7. Community Health & Governance Standards
+- **[Organization Contributing Guide](https://github.com/playerhub-pipeline/.github/blob/main/CONTRIBUTING.md)** — Branch naming conventions, PR requirements, test validation, and zero-AI attribution standards.
+- **[Security Policy & Vulnerability Reporting](https://github.com/playerhub-pipeline/.github/blob/main/SECURITY.md)** — Secret hygiene, push protection, Trivy container scanning, and coordinated disclosure guidelines.
+- **[Pull Request Template](https://github.com/playerhub-pipeline/.github/blob/main/PULL_REQUEST_TEMPLATE.md)** — Standard checklist required for every merged Pull Request across the organization.
+
+---
+
 ## 📦 Repositories Directory
 
 ### 🚀 Core Microservices Platform Repositories
